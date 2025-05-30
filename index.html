@@ -45,13 +45,21 @@
       });
       renderer.setSize(window.innerWidth, window.innerHeight);
 
+      // ✅ Light 1: Ambient Light
       const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
       scene.add(ambientLight);
 
+      // ✅ Light 2: Point Light
       const pointLight = new THREE.PointLight(0xffffff, 1);
       pointLight.position.set(10, 10, 10);
       scene.add(pointLight);
 
+      // ✅ Light 3: Directional Light
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+      directionalLight.position.set(-10, 10, 5);
+      scene.add(directionalLight);
+
+      // Geometries
       const geometries = [
         new THREE.BoxGeometry(),
         new THREE.SphereGeometry(0.5, 32, 32),
@@ -60,10 +68,9 @@
         new THREE.TorusGeometry(0.4, 0.15, 16, 100)
       ];
 
+      // Materials
       const textureLoader = new THREE.TextureLoader();
-      const texture = textureLoader.load(
-        'textures/uv_grid_opengl.png'
-      );
+      const texture = textureLoader.load('textures/uv_grid_opengl.png');
 
       const standardMaterial = new THREE.MeshStandardMaterial({
         color: 0x0077ff,
@@ -77,9 +84,10 @@
         roughness: 0.4
       });
 
+      // Generate 20 shapes
       const shapes = generateShapes(scene, geometries, texturedMaterial, standardMaterial);
 
-      // Load a textured GLTF model (helmet)
+      // Load GLTF Model
       const gltfLoader = new GLTFLoader();
       gltfLoader.load(
         'https://threejs.org/examples/models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf',
@@ -89,6 +97,7 @@
           model.scale.set(10, 10, 10);
           scene.add(model);
 
+          // Rotate model continuously
           function rotateModel() {
             requestAnimationFrame(rotateModel);
             model.rotation.y += 0.005;
@@ -101,6 +110,7 @@
         }
       );
 
+      // Animation loop
       function animate() {
         requestAnimationFrame(animate);
         shapes.forEach(shape => {
@@ -112,6 +122,7 @@
 
       animate();
 
+      // Handle window resizing
       window.addEventListener('resize', () => {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
