@@ -28,38 +28,49 @@
       import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
       import { generateShapes } from './generateShapes.js';
 
+      // Scene
       const scene = new THREE.Scene();
-      scene.background = new THREE.Color(0xeeeeee);
 
+      // 🌌 Skybox
+      const cubeTextureLoader = new THREE.CubeTextureLoader();
+      const skyboxTexture = cubeTextureLoader.load([
+        'https://threejs.org/examples/textures/cube/Bridge2/posx.jpg',
+        'https://threejs.org/examples/textures/cube/Bridge2/negx.jpg',
+        'https://threejs.org/examples/textures/cube/Bridge2/posy.jpg',
+        'https://threejs.org/examples/textures/cube/Bridge2/negy.jpg',
+        'https://threejs.org/examples/textures/cube/Bridge2/posz.jpg',
+        'https://threejs.org/examples/textures/cube/Bridge2/negz.jpg'
+      ]);
+      scene.background = skyboxTexture;
+
+      // Camera
       const camera = new THREE.PerspectiveCamera(
         75,
         window.innerWidth / window.innerHeight,
         0.1,
         1000
       );
-      camera.position.set(0, 5, 20); // Adjusted camera position for better view
+      camera.position.set(0, 5, 20);
 
+      // Renderer
       const renderer = new THREE.WebGLRenderer({
         canvas: document.getElementById('three-canvas'),
         antialias: true
       });
       renderer.setSize(window.innerWidth, window.innerHeight);
 
-      // ✅ Light 1: Ambient Light (increased intensity)
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.8); // Increased to 0.8
+      // Lights
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
       scene.add(ambientLight);
 
-      // ✅ Light 2: Point Light (increased intensity and added decay/distance)
-      const pointLight = new THREE.PointLight(0xffffff, 50, 100, 2); // Intensity 50, max distance 100
-      pointLight.position.set(5, 5, 5); // Moved closer to origin
+      const pointLight = new THREE.PointLight(0xffffff, 50, 100, 2);
+      pointLight.position.set(5, 5, 5);
       scene.add(pointLight);
 
-      // ✅ Light 3: Directional Light (increased intensity)
-      const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0); // Increased to 1.0
-      directionalLight.position.set(-5, 10, 5); // Adjusted position
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+      directionalLight.position.set(-5, 10, 5);
       scene.add(directionalLight);
 
-      // Optional: Add a helper to visualize the point light position
       const pointLightHelper = new THREE.PointLightHelper(pointLight, 0.5);
       scene.add(pointLightHelper);
 
@@ -74,12 +85,12 @@
 
       // Materials
       const textureLoader = new THREE.TextureLoader();
-      const texture = textureLoader.load('https://threejs.org/examples/textures/uv_grid_opengl.jpg'); // Use .jpg as per Three.js examples
+      const texture = textureLoader.load('https://threejs.org/examples/textures/uv_grid_opengl.jpg');
 
       const standardMaterial = new THREE.MeshStandardMaterial({
         color: 0x0077ff,
-        metalness: 0.5, // Increased for more reflectivity
-        roughness: 0.3 // Slightly smoother for better highlights
+        metalness: 0.5,
+        roughness: 0.3
       });
 
       const texturedMaterial = new THREE.MeshStandardMaterial({
@@ -97,8 +108,8 @@
         'https://threejs.org/examples/models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf',
         (gltf) => {
           const model = gltf.scene;
-          model.position.set(0, 0, 0); // Centered the model
-          model.scale.set(5, 5, 5); // Reduced scale for better scene balance
+          model.position.set(0, 0, 0);
+          model.scale.set(5, 5, 5);
           scene.add(model);
 
           // Rotate model continuously
@@ -114,7 +125,7 @@
         }
       );
 
-      // Animation loop
+      // Animate
       function animate() {
         requestAnimationFrame(animate);
         shapes.forEach(shape => {
@@ -123,10 +134,9 @@
         });
         renderer.render(scene, camera);
       }
-
       animate();
 
-      // Handle window resizing
+      // Resize
       window.addEventListener('resize', () => {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
