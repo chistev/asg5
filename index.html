@@ -112,6 +112,9 @@
   // Generate 20 shapes
   const shapes = generateShapes(scene, geometries, texturedMaterial, standardMaterial);
 
+  // Store original scales for each shape
+  const originalScales = shapes.map(shape => shape.scale.clone());
+
   // Load GLTF Model
   const gltfLoader = new GLTFLoader();
   gltfLoader.load(
@@ -138,13 +141,54 @@
   // Raycaster for interactivity
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
+  let currentlyHovered = null;
+
+  function onMouseMove(event) {
+    // Normalize mouse coordinates to [-1, 1]
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    // Update raycaster
+    raycaster.setFromCamera(mouse, camera);
+
+    // Check for intersections with shapes
+    const intersects = raycaster.intersectObjects(shapes);
+
+    // If hovering over a shape
+    if (intersects.length > 0) {
+      const intersectedMesh = intersects[0].object;
+      if (currentlyHovered !== intersectedMesh) {
+        // Revert previous hovered shape to original scale
+        if (currentlyHovered) {
+          const index = shapes.indexOf(currentlyHovered);
+          currentlyHovered.scale.copy(originalScales[index]);
+        }
+        // Scale up the new hovered shape
+        currentlyHovered = intersectedMesh;
+        const index = shapes.indexOf(currentlyHovered);
+        const originalScale = originalScales[index];
+        currentlyHovered.scale.set(
+          originalScale.x * 1.2,
+          originalScale.y * 1.2,
+          originalScale.z * 1.2
+        );
+      }
+    } else {
+      // If not hovering over any shape, revert scale of previously hovered
+      if (currentlyHovered) {
+        const index = shapes.indexOf(currentlyHovered);
+        currentlyHovered.scale.copy(originalScales[index]);
+        currentlyHovered = null;
+      }
+    }
+  }
 
   function onMouseClick(event) {
     // Normalize mouse coordinates to [-1, 1]
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-    // Update raycaster with camera and mouse position
+    // Update raycaster
     raycaster.setFromCamera(mouse, camera);
 
     // Check for intersections with shapes
@@ -152,7 +196,7 @@
 
     if (intersects.length > 0) {
       const intersectedMesh = intersects[0].object;
-      // Skip the textured shape (first shape)
+      // Skip the textured shape
       if (intersectedMesh.material !== texturedMaterial) {
         // Create a new material with a random color
         const randomColor = Math.random() * 0xffffff;
@@ -165,7 +209,8 @@
     }
   }
 
-  // Add click event listener
+  // Add event listeners
+  window.addEventListener('mousemove', onMouseMove);
   window.addEventListener('click', onMouseClick);
 
   // Animate
