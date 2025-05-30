@@ -24,135 +24,168 @@
   <body>
     <canvas id="three-canvas"></canvas>
     <script type="module">
-      import * as THREE from 'three';
-      import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-      import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-      import { generateShapes } from './generateShapes.js';
+  import * as THREE from 'three';
+  import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+  import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+  import { generateShapes } from './generateShapes.js';
 
-      // Scene
-      const scene = new THREE.Scene();
+  // Scene
+  const scene = new THREE.Scene();
 
-      // 🌌 Skybox
-      const cubeTextureLoader = new THREE.CubeTextureLoader();
-      const skyboxTexture = cubeTextureLoader.load([
-        'https://threejs.org/examples/textures/cube/Bridge2/posx.jpg',
-        'https://threejs.org/examples/textures/cube/Bridge2/negx.jpg',
-        'https://threejs.org/examples/textures/cube/Bridge2/posy.jpg',
-        'https://threejs.org/examples/textures/cube/Bridge2/negy.jpg',
-        'https://threejs.org/examples/textures/cube/Bridge2/posz.jpg',
-        'https://threejs.org/examples/textures/cube/Bridge2/negz.jpg'
-      ]);
-      scene.background = skyboxTexture;
+  // 🌌 Skybox
+  const cubeTextureLoader = new THREE.CubeTextureLoader();
+  const skyboxTexture = cubeTextureLoader.load([
+    'https://threejs.org/examples/textures/cube/Bridge2/posx.jpg',
+    'https://threejs.org/examples/textures/cube/Bridge2/negx.jpg',
+    'https://threejs.org/examples/textures/cube/Bridge2/posy.jpg',
+    'https://threejs.org/examples/textures/cube/Bridge2/negy.jpg',
+    'https://threejs.org/examples/textures/cube/Bridge2/posz.jpg',
+    'https://threejs.org/examples/textures/cube/Bridge2/negz.jpg'
+  ]);
+  scene.background = skyboxTexture;
 
-      // Camera
-      const camera = new THREE.PerspectiveCamera(
-        75,
-        window.innerWidth / window.innerHeight,
-        0.1,
-        1000
-      );
-      camera.position.set(0, 5, 20);
+  // Camera
+  const camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+  );
+  camera.position.set(0, 5, 20);
 
-      // Renderer
-      const renderer = new THREE.WebGLRenderer({
-        canvas: document.getElementById('three-canvas'),
-        antialias: true
-      });
-      renderer.setSize(window.innerWidth, window.innerHeight);
+  // Renderer
+  const renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById('three-canvas'),
+    antialias: true
+  });
+  renderer.setSize(window.innerWidth, window.innerHeight);
 
-      // OrbitControls
-      const controls = new OrbitControls(camera, renderer.domElement);
-      controls.enableDamping = true; // Smooth camera movement
-      controls.dampingFactor = 0.05;
-      controls.screenSpacePanning = false;
-      controls.minDistance = 5;
-      controls.maxDistance = 50;
-      controls.maxPolarAngle = Math.PI / 2; // Prevent camera from going below ground
+  // OrbitControls
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.05;
+  controls.screenSpacePanning = false;
+  controls.minDistance = 5;
+  controls.maxDistance = 50;
+  controls.maxPolarAngle = Math.PI / 2;
 
-      // Lights
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-      scene.add(ambientLight);
+  // Lights
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+  scene.add(ambientLight);
 
-      const pointLight = new THREE.PointLight(0xffffff, 50, 100, 2);
-      pointLight.position.set(5, 5, 5);
-      scene.add(pointLight);
+  const pointLight = new THREE.PointLight(0xffffff, 50, 100, 2);
+  pointLight.position.set(5, 5, 5);
+  scene.add(pointLight);
 
-      const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
-      directionalLight.position.set(-5, 10, 5);
-      scene.add(directionalLight);
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+  directionalLight.position.set(-5, 10, 5);
+  scene.add(directionalLight);
 
-      const pointLightHelper = new THREE.PointLightHelper(pointLight, 0.5);
-      scene.add(pointLightHelper);
+  const pointLightHelper = new THREE.PointLightHelper(pointLight, 0.5);
+  scene.add(pointLightHelper);
 
-      // Geometries
-      const geometries = [
-        new THREE.BoxGeometry(),
-        new THREE.SphereGeometry(0.5, 32, 32),
-        new THREE.CylinderGeometry(0.5, 0.5, 1, 32),
-        new THREE.ConeGeometry(0.5, 1, 32),
-        new THREE.TorusGeometry(0.4, 0.15, 16, 100)
-      ];
+  // Geometries
+  const geometries = [
+    new THREE.BoxGeometry(),
+    new THREE.SphereGeometry(0.5, 32, 32),
+    new THREE.CylinderGeometry(0.5, 0.5, 1, 32),
+    new THREE.ConeGeometry(0.5, 1, 32),
+    new THREE.TorusGeometry(0.4, 0.15, 16, 100)
+  ];
 
-      // Materials
-      const textureLoader = new THREE.TextureLoader();
-      const texture = textureLoader.load('https://threejs.org/examples/textures/uv_grid_opengl.jpg');
+  // Materials
+  const textureLoader = new THREE.TextureLoader();
+  const texture = textureLoader.load('https://threejs.org/examples/textures/uv_grid_opengl.jpg');
 
-      const standardMaterial = new THREE.MeshStandardMaterial({
-        color: 0xff0000,
-        metalness: 0.5,
-        roughness: 0.3
-      });
+  const standardMaterial = new THREE.MeshStandardMaterial({
+    color: 0xff0000,
+    metalness: 0.5,
+    roughness: 0.3
+  });
 
-      const texturedMaterial = new THREE.MeshStandardMaterial({
-        map: texture,
-        metalness: 0.5,
-        roughness: 0.3
-      });
+  const texturedMaterial = new THREE.MeshStandardMaterial({
+    map: texture,
+    metalness: 0.5,
+    roughness: 0.3
+  });
 
-      // Generate 20 shapes
-      const shapes = generateShapes(scene, geometries, texturedMaterial, standardMaterial);
+  // Generate 20 shapes
+  const shapes = generateShapes(scene, geometries, texturedMaterial, standardMaterial);
 
-      // Load GLTF Model
-      const gltfLoader = new GLTFLoader();
-      gltfLoader.load(
-        'https://threejs.org/examples/models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf',
-        (gltf) => {
-          const model = gltf.scene;
-          model.position.set(0, 0, 0);
-          model.scale.set(5, 5, 5);
-          scene.add(model);
+  // Load GLTF Model
+  const gltfLoader = new GLTFLoader();
+  gltfLoader.load(
+    'https://threejs.org/examples/models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf',
+    (gltf) => {
+      const model = gltf.scene;
+      model.position.set(0, 0, 0);
+      model.scale.set(5, 5, 5);
+      scene.add(model);
 
-          // Rotate model continuously
-          function rotateModel() {
-            requestAnimationFrame(rotateModel);
-            model.rotation.y += 0.005;
-          }
-          rotateModel();
-        },
-        undefined,
-        (error) => {
-          console.error('Error loading glTF model:', error);
-        }
-      );
-
-      // Animate
-      function animate() {
-        requestAnimationFrame(animate);
-        shapes.forEach(shape => {
-          shape.rotation.x += 0.005;
-          shape.rotation.y += 0.01;
-        });
-        controls.update(); // Update controls for smooth interaction
-        renderer.render(scene, camera);
+      // Rotate model continuously
+      function rotateModel() {
+        requestAnimationFrame(rotateModel);
+        model.rotation.y += 0.005;
       }
-      animate();
+      rotateModel();
+    },
+    undefined,
+    (error) => {
+      console.error('Error loading glTF model:', error);
+    }
+  );
 
-      // Resize
-      window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-      });
-    </script>
+  // Raycaster for interactivity
+  const raycaster = new THREE.Raycaster();
+  const mouse = new THREE.Vector2();
+
+  function onMouseClick(event) {
+    // Normalize mouse coordinates to [-1, 1]
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    // Update raycaster with camera and mouse position
+    raycaster.setFromCamera(mouse, camera);
+
+    // Check for intersections with shapes
+    const intersects = raycaster.intersectObjects(shapes);
+
+    if (intersects.length > 0) {
+      const intersectedMesh = intersects[0].object;
+      // Skip the textured shape (first shape)
+      if (intersectedMesh.material !== texturedMaterial) {
+        // Create a new material with a random color
+        const randomColor = Math.random() * 0xffffff;
+        intersectedMesh.material = new THREE.MeshStandardMaterial({
+          color: randomColor,
+          metalness: 0.5,
+          roughness: 0.3
+        });
+      }
+    }
+  }
+
+  // Add click event listener
+  window.addEventListener('click', onMouseClick);
+
+  // Animate
+  function animate() {
+    requestAnimationFrame(animate);
+    shapes.forEach(shape => {
+      shape.rotation.x += 0.005;
+      shape.rotation.y += 0.01;
+    });
+    controls.update();
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  // Resize
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+</script>
   </body>
 </html>
