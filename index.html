@@ -24,186 +24,296 @@
   <body>
     <canvas id="three-canvas"></canvas>
     <script type="module">
-  import * as THREE from 'three';
-  import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-  import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-  import { generateShapes } from './generateShapes.js';
-  import { handleMouseMove } from './hoverHandler.js';
+      import * as THREE from 'three';
+      import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+      import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+      import { generateShapes } from './generateShapes.js';
+      import { handleMouseMove } from './hoverHandler.js';
 
-  // Scene
-  const scene = new THREE.Scene();
+      // Scene
+      const scene = new THREE.Scene();
 
-  // 🌌 Skybox
-  const cubeTextureLoader = new THREE.CubeTextureLoader();
-  const skyboxTexture = cubeTextureLoader.load([
-    'https://threejs.org/examples/textures/cube/Bridge2/posx.jpg',
-    'https://threejs.org/examples/textures/cube/Bridge2/negx.jpg',
-    'https://threejs.org/examples/textures/cube/Bridge2/posy.jpg',
-    'https://threejs.org/examples/textures/cube/Bridge2/negy.jpg',
-    'https://threejs.org/examples/textures/cube/Bridge2/posz.jpg',
-    'https://threejs.org/examples/textures/cube/Bridge2/negz.jpg'
-  ]);
-  scene.background = skyboxTexture;
+      // 🌌 Skybox
+      const cubeTextureLoader = new THREE.CubeTextureLoader();
+      const skyboxTexture = cubeTextureLoader.load([
+        'https://threejs.org/examples/textures/cube/Bridge2/posx.jpg',
+        'https://threejs.org/examples/textures/cube/Bridge2/negx.jpg',
+        'https://threejs.org/examples/textures/cube/Bridge2/posy.jpg',
+        'https://threejs.org/examples/textures/cube/Bridge2/negy.jpg',
+        'https://threejs.org/examples/textures/cube/Bridge2/posz.jpg',
+        'https://threejs.org/examples/textures/cube/Bridge2/negz.jpg'
+      ]);
+      scene.background = skyboxTexture;
 
-  // Camera
-  const camera = new THREE.PerspectiveCamera(
-    75,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-  );
-  camera.position.set(0, 5, 20);
+      // Camera
+      const camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+      );
+      camera.position.set(0, 5, 20);
 
-  // Renderer
-  const renderer = new THREE.WebGLRenderer({
-    canvas: document.getElementById('three-canvas'),
-    antialias: true
-  });
-  renderer.setSize(window.innerWidth, window.innerHeight);
+      // Renderer
+      const renderer = new THREE.WebGLRenderer({
+        canvas: document.getElementById('three-canvas'),
+        antialias: true
+      });
+      renderer.setSize(window.innerWidth, window.innerHeight);
 
-  // OrbitControls
-  const controls = new OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
-  controls.dampingFactor = 0.05;
-  controls.screenSpacePanning = false;
-  controls.minDistance = 5;
-  controls.maxDistance = 50;
-  controls.maxPolarAngle = Math.PI / 2;
+      // OrbitControls
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+      controls.screenSpacePanning = false;
+      controls.minDistance = 5;
+      controls.maxDistance = 50;
+      controls.maxPolarAngle = Math.PI / 2;
 
-  // Lights
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-  scene.add(ambientLight);
+      // Lights
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+      scene.add(ambientLight);
 
-  const pointLight = new THREE.PointLight(0xffffff, 50, 100, 2);
-  pointLight.position.set(5, 5, 5);
-  scene.add(pointLight);
+      const pointLight = new THREE.PointLight(0xffffff, 50, 100, 2);
+      pointLight.position.set(5, 5, 5);
+      scene.add(pointLight);
 
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
-  directionalLight.position.set(-5, 10, 5);
-  scene.add(directionalLight);
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+      directionalLight.position.set(-5, 10, 5);
+      scene.add(directionalLight);
 
-  const pointLightHelper = new THREE.PointLightHelper(pointLight, 0.5);
-  scene.add(pointLightHelper);
+      const pointLightHelper = new THREE.PointLightHelper(pointLight, 0.5);
+      scene.add(pointLightHelper);
 
-  // Geometries
-  const geometries = [
-    new THREE.BoxGeometry(),
-    new THREE.SphereGeometry(0.5, 32, 32),
-    new THREE.CylinderGeometry(0.5, 0.5, 1, 32),
-    new THREE.ConeGeometry(0.5, 1, 32),
-    new THREE.TorusGeometry(0.4, 0.15, 16, 100)
-  ];
+      // Geometries
+      const geometries = [
+        new THREE.BoxGeometry(),
+        new THREE.SphereGeometry(0.5, 32, 32),
+        new THREE.CylinderGeometry(0.5, 0.5, 1, 32),
+        new THREE.ConeGeometry(0.5, 1, 32),
+        new THREE.TorusGeometry(0.4, 0.15, 16, 100)
+      ];
 
-  // Materials
-  const textureLoader = new THREE.TextureLoader();
-  const texture = textureLoader.load('https://threejs.org/examples/textures/uv_grid_opengl.jpg');
+      // Materials
+      const textureLoader = new THREE.TextureLoader();
+      const texture = textureLoader.load('https://threejs.org/examples/textures/uv_grid_opengl.jpg');
 
-  const standardMaterial = new THREE.MeshStandardMaterial({
-    color: 0xff0000,
-    metalness: 0.5,
-    roughness: 0.3
-  });
+      const standardMaterial = new THREE.MeshStandardMaterial({
+        color: 0xff0000,
+        metalness: 0.5,
+        roughness: 0.3
+      });
 
-  const texturedMaterial = new THREE.MeshStandardMaterial({
-    map: texture,
-    metalness: 0.5,
-    roughness: 0.3
-  });
+      const texturedMaterial = new THREE.MeshStandardMaterial({
+        map: texture,
+        metalness: 0.5,
+        roughness: 0.3
+      });
 
-  // Generate 20 shapes
-  const shapes = generateShapes(scene, geometries, texturedMaterial, standardMaterial);
+      // Generate 20 shapes
+      const shapes = generateShapes(scene, geometries, texturedMaterial, standardMaterial);
 
-  // Store original scales for each shape
-  const originalScales = shapes.map(shape => shape.scale.clone());
+      // Store original scales and rotation directions for each shape
+      const originalScales = shapes.map(shape => shape.scale.clone());
+      const rotationDirections = shapes.map(() => ({
+        x: 0.005,
+        y: 0.01
+      }));
 
-  // Load GLTF Model
-  const gltfLoader = new GLTFLoader();
-  gltfLoader.load(
-    'https://threejs.org/examples/models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf',
-    (gltf) => {
-      const model = gltf.scene;
-      model.position.set(0, 0, 0);
-      model.scale.set(5, 5, 5);
-      scene.add(model);
+      // === NEW: Moving Sphere for Collision ===
+      const sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+      const sphereMaterial = new THREE.MeshStandardMaterial({
+        color: 0x00ff00,
+        metalness: 0.5,
+        roughness: 0.3
+      });
+      const movingSphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+      movingSphere.position.set(0, 0, 0);
+      scene.add(movingSphere);
 
-      // Rotate model continuously
-      function rotateModel() {
-        requestAnimationFrame(rotateModel);
-        model.rotation.y += 0.005;
+      // Sphere velocity
+      const sphereVelocity = new THREE.Vector3(
+        (Math.random() - 0.5) * 0.1,
+        (Math.random() - 0.5) * 0.1,
+        (Math.random() - 0.5) * 0.1
+      );
+
+      // Boundary limits for the sphere
+      const boundary = 15; // Matches the spread of shapes (±15)
+
+      // Track animations for scale pulsing
+      const animations = shapes.map(() => ({
+        isPulsing: false,
+        pulseTime: 0,
+        pulseDuration: 0.5 // Duration of pulse in seconds
+      }));
+
+      // Load GLTF Model
+      const gltfLoader = new GLTFLoader();
+      gltfLoader.load(
+        'https://threejs.org/examples/models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf',
+        (gltf) => {
+          const model = gltf.scene;
+          model.position.set(0, 0, 0);
+          model.scale.set(5, 5, 5);
+          scene.add(model);
+
+          // Rotate model continuously
+          function rotateModel() {
+            requestAnimationFrame(rotateModel);
+            model.rotation.y += 0.005;
+          }
+          rotateModel();
+        },
+        undefined,
+        (error) => {
+          console.error('Error loading glTF model:', error);
+        }
+      );
+
+      // Raycaster for interactivity
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2();
+      let currentlyHovered = null;
+
+      function getCurrentlyHovered() {
+        return currentlyHovered;
       }
-      rotateModel();
-    },
-    undefined,
-    (error) => {
-      console.error('Error loading glTF model:', error);
-    }
-  );
 
-  // Raycaster for interactivity
-  const raycaster = new THREE.Raycaster();
-  const mouse = new THREE.Vector2();
-  let currentlyHovered = null;
+      function setCurrentlyHovered(value) {
+        currentlyHovered = value;
+      }
 
-  function getCurrentlyHovered() {
-  return currentlyHovered;
-}
+      function onMouseMove(event) {
+        handleMouseMove(event, raycaster, mouse, camera, shapes, originalScales, setCurrentlyHovered, getCurrentlyHovered);
+      }
 
-function setCurrentlyHovered(value) {
-  currentlyHovered = value;
-}
+      function onMouseClick(event) {
+        // Normalize mouse coordinates to [-1, 1]
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-function onMouseMove(event) {
-  handleMouseMove(event, raycaster, mouse, camera, shapes, originalScales, setCurrentlyHovered, getCurrentlyHovered);
-}
+        // Update raycaster
+        raycaster.setFromCamera(mouse, camera);
 
-  function onMouseClick(event) {
-    // Normalize mouse coordinates to [-1, 1]
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        // Check for intersections with shapes
+        const intersects = raycaster.intersectObjects(shapes);
 
-    // Update raycaster
-    raycaster.setFromCamera(mouse, camera);
+        if (intersects.length > 0) {
+          const intersectedMesh = intersects[0].object;
+          // Skip the textured shape
+          if (intersectedMesh.material !== texturedMaterial) {
+            // Create a new material with a random color
+            const randomColor = Math.random() * 0xffffff;
+            intersectedMesh.material = new THREE.MeshStandardMaterial({
+              color: randomColor,
+              metalness: 0.5,
+              roughness: 0.3
+            });
+          }
+        }
+      }
 
-    // Check for intersections with shapes
-    const intersects = raycaster.intersectObjects(shapes);
+      // Add event listeners
+      window.addEventListener('mousemove', onMouseMove);
+      window.addEventListener('click', onMouseClick);
 
-    if (intersects.length > 0) {
-      const intersectedMesh = intersects[0].object;
-      // Skip the textured shape
-      if (intersectedMesh.material !== texturedMaterial) {
-        // Create a new material with a random color
-        const randomColor = Math.random() * 0xffffff;
-        intersectedMesh.material = new THREE.MeshStandardMaterial({
-          color: randomColor,
-          metalness: 0.5,
-          roughness: 0.3
+      // === NEW: Collision Detection and Animation ===
+      function checkCollisions() {
+        const sphereBox = new THREE.Box3().setFromObject(movingSphere);
+        shapes.forEach((shape, index) => {
+          const shapeBox = new THREE.Box3().setFromObject(shape);
+          if (sphereBox.intersectsBox(shapeBox) && !animations[index].isPulsing) {
+            // Skip textured shape (first shape)
+            if (shape.material !== texturedMaterial) {
+              // Change color
+              shape.material = new THREE.MeshStandardMaterial({
+                color: Math.random() * 0xffffff,
+                metalness: 0.5,
+                roughness: 0.3
+              });
+              // Reverse rotation direction
+              rotationDirections[index].x *= -1;
+              rotationDirections[index].y *= -1;
+              // Start pulse animation
+              animations[index].isPulsing = true;
+              animations[index].pulseTime = 0;
+            }
+            // Bounce the sphere
+            const normal = new THREE.Vector3();
+            const spherePos = movingSphere.position;
+            const shapePos = shape.position;
+            normal.subVectors(spherePos, shapePos).normalize();
+            const dot = sphereVelocity.dot(normal);
+            sphereVelocity.sub(normal.multiplyScalar(2 * dot));
+          }
         });
       }
-    }
-  }
 
-  // Add event listeners
-  window.addEventListener('mousemove', onMouseMove);
-  window.addEventListener('click', onMouseClick);
+      // === NEW: Update Sphere Position and Handle Pulsing ===
+      function updateSphereAndAnimations(delta) {
+        // Update sphere position
+        movingSphere.position.addScaledVector(sphereVelocity, delta * 60);
 
-  // Animate
-  function animate() {
-    requestAnimationFrame(animate);
-    shapes.forEach(shape => {
-      shape.rotation.x += 0.005;
-      shape.rotation.y += 0.01;
-    });
-    controls.update();
-    renderer.render(scene, camera);
-  }
-  animate();
+        // Boundary collision
+        if (Math.abs(movingSphere.position.x) > boundary) {
+          movingSphere.position.x = Math.sign(movingSphere.position.x) * boundary;
+          sphereVelocity.x *= -1;
+        }
+        if (Math.abs(movingSphere.position.y) > boundary) {
+          movingSphere.position.y = Math.sign(movingSphere.position.y) * boundary;
+          sphereVelocity.y *= -1;
+        }
+        if (Math.abs(movingSphere.position.z) > boundary) {
+          movingSphere.position.z = Math.sign(movingSphere.position.z) * boundary;
+          sphereVelocity.z *= -1;
+        }
 
-  // Resize
-  window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  });
-</script>
+        // Update pulse animations
+        shapes.forEach((shape, index) => {
+          if (animations[index].isPulsing) {
+            animations[index].pulseTime += delta;
+            const t = animations[index].pulseTime / animations[index].pulseDuration;
+            if (t < 1) {
+              const scaleFactor = 1 + 0.3 * Math.sin(t * Math.PI); // Pulse from 1x to 1.3x
+              shape.scale.copy(originalScales[index]).multiplyScalar(scaleFactor);
+            } else {
+              animations[index].isPulsing = false;
+              shape.scale.copy(originalScales[index]);
+            }
+          }
+        });
+      }
+
+      // Animate
+      let lastTime = performance.now() / 1000;
+      function animate() {
+        requestAnimationFrame(animate);
+        const currentTime = performance.now() / 1000;
+        const delta = currentTime - lastTime;
+        lastTime = currentTime;
+
+        // Update shapes rotation
+        shapes.forEach((shape, index) => {
+          shape.rotation.x += rotationDirections[index].x;
+          shape.rotation.y += rotationDirections[index].y;
+        });
+
+        // Update sphere and check collisions
+        updateSphereAndAnimations(delta);
+        checkCollisions();
+
+        controls.update();
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      // Resize
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    </script>
   </body>
 </html>
