@@ -1,4 +1,3 @@
-// collisionHandler.js
 import * as THREE from 'three';
 
 export function checkCollisions({
